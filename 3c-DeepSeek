@@ -1,0 +1,1134 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Valores Previstos de Espirometria: Crianças de 3 a 12 anos</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f7f6;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        .container {
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            width: 100%;
+            max-width: 1000px;
+            box-sizing: border-box;
+        }
+
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.2em;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .input-group label {
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: bold;
+            font-size: 0.95em;
+        }
+
+        .input-group input[type="text"],
+        .input-group input[type="number"],
+        .input-group input[type="date"],
+        .input-group select {
+            padding: 12px 15px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 1em;
+            width: calc(100% - 30px);
+            box-sizing: border-box;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-color: #fcfcfc;
+        }
+
+        .input-group select {
+            background-image: url('data:image/svg+xml;utf8,<svg fill="%23333333" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/><path d="M0 0h24v24H0z" fill="none"/></svg>');
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            background-size: 20px;
+        }
+
+        .observed-values-section {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px dashed #ccc;
+        }
+
+        .observed-values-group {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .observed-values-column {
+            flex: 1;
+            min-width: 280px;
+        }
+
+        button {
+            background-color: #3498db;
+            color: white;
+            padding: 14px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            width: 100%;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            margin-top: 20px;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        #results {
+            margin-top: 30px;
+            padding: 25px;
+            background-color: #e8f4f8;
+            border-radius: 10px;
+            border: 1px solid #c2e1f0;
+            color: #2c3e50;
+        }
+
+        #results h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.6em;
+            text-align: center;
+        }
+
+        .result-warning {
+            color: #e74c3c;
+            font-weight: bold;
+            text-align: center;
+            margin-top: 15px;
+            margin-bottom: 20px;
+        }
+
+        .error-message {
+            color: #e74c3c;
+            font-size: 0.9em;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .exam-details {
+            text-align: left;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px dashed #ccc;
+            font-size: 0.95em;
+        }
+
+        .exam-details p {
+            margin: 5px 0;
+        }
+
+        .exam-details strong {
+            color: #2c3e50;
+        }
+
+        .citation {
+            font-style: italic;
+            font-size: 0.85em;
+            text-align: right;
+            margin-top: -15px;
+            margin-bottom: 20px;
+            color: #555;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            margin-bottom: 30px;
+            font-size: 0.95em;
+        }
+
+        table th, table td {
+            border: 1px solid #c2e1f0;
+            padding: 10px;
+            text-align: center;
+        }
+
+        table th {
+            background-color: #d1e7f0;
+            color: #2c3e50;
+            font-weight: bold;
+        }
+
+        table tr:nth-child(even) {
+            background-color: #f0f8fb;
+        }
+
+        table td:first-child {
+            text-align: left;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .value-below-lin {
+            color: #c0392b;
+            font-weight: bold;
+        }
+
+        .change-significant-green {
+            color: #27ae60;
+            font-weight: bold;
+        }
+
+        #interpretation-section {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px dashed #ccc;
+        }
+
+        #interpretation-section h2 {
+            margin-bottom: 15px;
+        }
+
+        #interpretation-text {
+            line-height: 1.6;
+            text-align: justify;
+            white-space: pre-line;
+        }
+
+        .action-buttons-group {
+            margin-top: 30px;
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .action-buttons-group button {
+            width: auto;
+            flex-grow: 1;
+            max-width: 250px;
+        }
+
+        @media print {
+            body {
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+            .container {
+                box-shadow: none !important;
+                border-radius: 0 !important;
+                padding: 0 !important;
+                width: 100% !important;
+                max-width: 100% !important;
+            }
+            h1 {
+                font-size: 1.5em !important;
+                margin-top: 10px !important;
+                margin-bottom: 15px !important;
+            }
+            h2 {
+                font-size: 1.2em !important;
+                margin-top: 5px !important;
+                margin-bottom: 10px !important;
+            }
+            .exam-details {
+                font-size: 0.8em !important;
+                margin-bottom: 5px !important;
+                padding-bottom: 5px !important;
+                border-bottom: 0.5px dashed #ccc !important;
+            }
+            .citation {
+                font-size: 0.7em !important;
+                margin-top: 5px !important;
+                margin-bottom: 5px !important;
+            }
+            table {
+                font-size: 0.7em !important;
+                margin-top: 5px !important;
+                margin-bottom: 10px !important;
+            }
+            table th, table td {
+                padding: 3px 5px !important;
+            }
+            .spirometry-form, .action-buttons-group, .result-warning, .error-message {
+                display: none !important;
+            }
+            #results {
+                padding: 0 !important;
+                background-color: transparent !important;
+                border: none !important;
+                box-shadow: none !important;
+            }
+            #interpretation-section {
+                display: block !important;
+                font-size: 0.8em !important;
+                margin-top: 10px !important;
+                padding-top: 10px !important;
+                border-top: 0.5px dashed #ccc !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Valores Previstos de Espirometria: Crianças de 3 a 12 anos</h1>
+        <form id="spirometryForm" class="spirometry-form">
+            <div class="input-group">
+                <label for="patientName">Nome do Paciente:</label>
+                <input type="text" id="patientName" required>
+                <div class="error-message" id="patientNameError">Nome do paciente é obrigatório.</div>
+            </div>
+
+            <div class="input-group">
+                <label for="examDate">Data do Exame:</label>
+                <input type="date" id="examDate" required>
+                <div class="error-message" id="examDateError">Data do exame é obrigatória.</div>
+            </div>
+
+            <div class="input-group">
+                <label for="doctorName">Nome do Médico:</label>
+                <input type="text" id="doctorName" required>
+                <div class="error-message" id="doctorNameError">Nome do médico é obrigatório.</div>
+            </div>
+
+            <div class="input-group">
+                <label for="clinicName">Clínica:</label>
+                <input type="text" id="clinicName" required>
+                <div class="error-message" id="clinicNameError">Nome da clínica é obrigatório.</div>
+            </div>
+
+            <div class="input-group">
+                <label for="ageYears">Idade (anos):</label>
+                <input type="number" id="ageYears" min="3" max="12" step="1" required>
+                <div class="error-message" id="ageError">A idade deve estar entre 3 e 12 anos.</div>
+            </div>
+
+            <div class="input-group">
+                <label for="ageMonths">Idade (meses, opcional):</label>
+                <input type="number" id="ageMonths" min="0" max="11" step="1" value="0">
+                <div class="error-message" id="ageMonthsError">Os meses devem estar entre 0 e 11.</div>
+            </div>
+
+            <div class="input-group">
+                <label for="heightCm">Altura (cm):</label>
+                <input type="number" id="heightCm" min="50" max="200" step="0.1" required>
+                <div class="error-message" id="heightError">A altura deve ser um valor válido em cm.</div>
+            </div>
+
+            <div class="input-group">
+                <label for="gender">Sexo:</label>
+                <select id="gender" required>
+                    <option value="">Selecione</option>
+                    <option value="male">Masculino</option>
+                    <option value="female">Feminino</option>
+                </select>
+                <div class="error-message" id="genderError">Selecione o sexo.</div>
+            </div>
+
+            <div class="input-group">
+                <label for="colorCode">Cor:</label>
+                <select id="colorCode" required>
+                    <option value="">Selecione</option>
+                    <option value="0">Branco</option>
+                    <option value="1">Negro ou Pardo</option>
+                </select>
+                <div class="error-message" id="colorCodeError">Selecione a cor.</div>
+            </div>
+
+            <div class="observed-values-section">
+                <h2>Valores Observados</h2>
+                <div class="observed-values-group">
+                    <div class="observed-values-column">
+                        <h3>Pré-Broncodilatador</h3>
+                        <div class="input-group">
+                            <label for="obsCVF_pre">CVF (L):</label>
+                            <input type="number" id="obsCVF_pre" step="0.01">
+                        </div>
+                        <div class="input-group">
+                            <label for="obsVEF1_pre">VEF1 (L):</label>
+                            <input type="number" id="obsVEF1_pre" step="0.01">
+                        </div>
+                        <div class="input-group">
+                            <label for="obsFEF2575_pre">FEF25-75% (L/s):</label>
+                            <input type="number" id="obsFEF2575_pre" step="0.01">
+                        </div>
+                    </div>
+
+                    <div class="observed-values-column">
+                        <h3>Pós-Broncodilatador</h3>
+                        <div class="input-group">
+                            <label for="obsCVF_post">CVF (L):</label>
+                            <input type="number" id="obsCVF_post" step="0.01">
+                        </div>
+                        <div class="input-group">
+                            <label for="obsVEF1_post">VEF1 (L):</label>
+                            <input type="number" id="obsVEF1_post" step="0.01">
+                        </div>
+                        <div class="input-group">
+                            <label for="obsFEF2575_post">FEF25-75% (L/s):</label>
+                            <input type="number" id="obsFEF2575_post" step="0.01">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit">Calcular Espirometria</button>
+        </form>
+
+        <div id="results" style="display: none;">
+            <div class="result-warning" id="ageRangeWarning" style="display: none;">
+                *Atenção: A idade da criança está fora da faixa recomendada (3 a 12 anos, 11 meses e 29 dias). Os resultados podem não ser precisos.*
+            </div>
+
+            <div class="exam-details">
+                <p><strong>Nome do Paciente:</strong> <span id="displayPatientName"></span></p>
+                <p><strong>Data do Exame:</strong> <span id="displayExamDate"></span></p>
+                <p><strong>Médico Responsável:</strong> <span id="displayDoctorName"></span></p>
+                <p><strong>Clínica:</strong> <span id="displayClinicName"></span></p>
+            </div>
+
+            <h2>Resultados Pré-Broncodilatador</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Variável</th>
+                        <th>Observado</th>
+                        <th>Previsto</th>
+                        <th>LIN</th>
+                        <th>% do Previsto</th>
+                        <th>Z-score</th>
+                    </tr>
+                </thead>
+                <tbody id="resultsTableBodyPre">
+                </tbody>
+            </table>
+
+            <h2>Resultados Pós-Broncodilatador e Reversibilidade</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Variável</th>
+                        <th>Observado Pós-BD</th>
+                        <th>% do Previsto Pós-BD</th>
+                        <th>Z-score Pós-BD</th>
+                        <th>Dif. Abs.</th>
+                        <th>Dif. % do Previsto</th>
+                    </tr>
+                </thead>
+                <tbody id="resultsTableBodyPostAndReversibility">
+                </tbody>
+            </table>
+            <p class="citation">Valores previstos: Jones et al. Jornal Brasileiro de Pneumologia, 2020</p>
+
+            <div id="interpretation-section">
+                <h2>Interpretação do Exame</h2>
+                <div id="interpretation-text"></div>
+            </div>
+
+            <div class="action-buttons-group">
+                <button type="button" id="printButton">Imprimir (PDF)</button>
+                <button type="button" id="shareButton">Compartilhar (PNG)</button>
+                <button type="button" id="resetButton">Novo Exame</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            // Carrega dados persistentes do localStorage
+            const savedDoctorName = localStorage.getItem('doctorName');
+            if (savedDoctorName) {
+                document.getElementById('doctorName').value = savedDoctorName;
+            }
+            const savedClinicName = localStorage.getItem('clinicName');
+            if (savedClinicName) {
+                document.getElementById('clinicName').value = savedClinicName;
+            }
+            
+            // Preenche a data do exame com a data atual por padrão
+            const today = new Date();
+            const yyyy = today.getFullYear();
+            const mm = String(today.getMonth() + 1).padStart(2, '0');
+            const dd = String(today.getDate()).padStart(2, '0');
+            document.getElementById('examDate').value = `${yyyy}-${mm}-${dd}`;
+        });
+
+        // Salva o nome do médico e da clínica no localStorage
+        document.getElementById('doctorName').addEventListener('input', (event) => {
+            localStorage.setItem('doctorName', event.target.value);
+        });
+        
+        document.getElementById('clinicName').addEventListener('input', (event) => {
+            localStorage.setItem('clinicName', event.target.value);
+        });
+
+        document.getElementById('spirometryForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            // Limpa mensagens de erro anteriores
+            document.querySelectorAll('.error-message').forEach(el => el.style.display = 'none');
+            document.getElementById('ageRangeWarning').style.display = 'none';
+
+            let isValid = true;
+
+            // Obtém valores dos campos
+            const patientName = document.getElementById('patientName').value.trim();
+            const examDate = document.getElementById('examDate').value;
+            const doctorName = document.getElementById('doctorName').value.trim();
+            const clinicName = document.getElementById('clinicName').value.trim();
+            const ageYears = parseFloat(document.getElementById('ageYears').value);
+            const ageMonths = document.getElementById('ageMonths').value ? parseFloat(document.getElementById('ageMonths').value) : 0;
+            const heightCm = parseFloat(document.getElementById('heightCm').value);
+            const gender = document.getElementById('gender').value;
+            const colorCode = parseFloat(document.getElementById('colorCode').value);
+
+            // Valores Observados PRÉ-BD
+            const obsCVF_pre = parseFloat(document.getElementById('obsCVF_pre').value) || null;
+            const obsVEF1_pre = parseFloat(document.getElementById('obsVEF1_pre').value) || null;
+            const obsFEF2575_pre = parseFloat(document.getElementById('obsFEF2575_pre').value) || null;
+
+            // Valores Observados PÓS-BD
+            const obsCVF_post = parseFloat(document.getElementById('obsCVF_post').value) || null;
+            const obsVEF1_post = parseFloat(document.getElementById('obsVEF1_post').value) || null;
+            const obsFEF2575_post = parseFloat(document.getElementById('obsFEF2575_post').value) || null;
+
+            // Validações de entrada
+            if (!patientName) {
+                document.getElementById('patientNameError').style.display = 'block';
+                isValid = false;
+            }
+            if (!examDate) {
+                document.getElementById('examDateError').style.display = 'block';
+                isValid = false;
+            }
+            if (!doctorName) {
+                document.getElementById('doctorNameError').style.display = 'block';
+                isValid = false;
+            }
+            if (!clinicName) {
+                document.getElementById('clinicNameError').style.display = 'block';
+                isValid = false;
+            }
+            if (isNaN(ageYears) || ageYears < 3 || ageYears > 12) {
+                document.getElementById('ageError').style.display = 'block';
+                isValid = false;
+            }
+            if (isNaN(ageMonths) || ageMonths < 0 || ageMonths > 11) {
+                document.getElementById('ageMonthsError').style.display = 'block';
+                isValid = false;
+            }
+            if (isNaN(heightCm) || heightCm <= 0) {
+                document.getElementById('heightError').style.display = 'block';
+                isValid = false;
+            }
+            if (gender === "") {
+                document.getElementById('genderError').style.display = 'block';
+                isValid = false;
+            }
+            if (isNaN(colorCode)) {
+                document.getElementById('colorCodeError').style.display = 'block';
+                isValid = false;
+            }
+
+            if (!isValid) {
+                document.getElementById('results').style.display = 'none';
+                return;
+            }
+
+            // Exibe dados de identificação nos resultados
+            document.getElementById('displayPatientName').textContent = patientName;
+            document.getElementById('displayExamDate').textContent = new Date(examDate).toLocaleDateString('pt-BR');
+            document.getElementById('displayDoctorName').textContent = doctorName;
+            document.getElementById('displayClinicName').textContent = clinicName;
+
+            // Calcula a idade total em anos para as equações
+            const totalAgeInYears = ageYears + (ageMonths / 12);
+            const lnAge = Math.log(totalAgeInYears);
+            const lnHeight = Math.log(heightCm);
+
+            // Verifica a faixa etária para a mensagem de aviso
+            if (totalAgeInYears < 3 || totalAgeInYears >= 13) {
+                document.getElementById('ageRangeWarning').style.display = 'block';
+            }
+
+            // Coeficientes para Valores Previstos (Masculino)
+            const coefMalePrev = {
+                intercept: {
+                    cvf: -11.358191, vef1: -10.434226, vef1cvf: 1.760961,
+                    fef2575: -6.957857, fef2575cvf: 6.185501
+                },
+                lnAltura: {
+                    cvf: 2.419817, vef1: 2.207609, vef1cvf: -0.176748,
+                    fef2575: 1.527303, fef2575cvf: -1.044205
+                },
+                lnIdade: {
+                    cvf: 0.115477, vef1: 0.114001, vef1cvf: 0,
+                    fef2575: 0.138649, fef2575cvf: 0
+                },
+                cor: {
+                    cvf: -0.028745, vef1: -0.031836, vef1cvf: 0,
+                    fef2575: 0, fef2575cvf: 0.093297
+                }
+            };
+
+            // Coeficientes para Valores Previstos (Feminino)
+            const coefFemalePrev = {
+                intercept: {
+                    cvf: -10.741935, vef1: -9.967774, vef1cvf: 1.437685,
+                    fef2575: -7.385469, fef2575cvf: 5.041747
+                },
+                lnAltura: {
+                    cvf: 2.261976, vef1: 2.08895, vef1cvf: -0.106215,
+                    fef2575: 1.594033, fef2575cvf: -0.785773
+                },
+                lnIdade: {
+                    cvf: 0.156836, vef1: 0.150386, vef1cvf: 0,
+                    fef2575: 0.203576, fef2575cvf: 0
+                },
+                cor: {
+                    cvf: -0.041015, vef1: -0.048582, vef1cvf: 0,
+                    fef2575: 0, fef2575cvf: 0.046472
+                }
+            };
+
+            // Coeficientes para Limite Inferior da Normalidade (LIN - Masculino)
+            const coefMaleLIN = {
+                intercept: {
+                    cvf: -9.32749, vef1: -8.960184, vef1cvf: 1.94278,
+                    fef2575: -5.356269, fef2575cvf: 4.579022
+                },
+                lnAltura: {
+                    cvf: 1.890179, vef1: 1.820202, vef1cvf: -0.231255,
+                    fef2575: 1.085145, fef2575cvf: -0.78661
+                },
+                lnIdade: {
+                    cvf: 0.268924, vef1: 0.208981, vef1cvf: 0,
+                    fef2575: 0.211021, fef2575cvf: 0
+                },
+                cor: {
+                    cvf: -0.042377, vef1: -0.026383, vef1cvf: 0,
+                    fef2575: 0, fef2575cvf: 0.036968
+                }
+            };
+
+            // Coeficientes para Limite Inferior da Normalidade (LIN - Feminino)
+            const coefFemaleLIN = {
+                intercept: {
+                    cvf: -10.325884, vef1: -8.934018, vef1cvf: 1.313149,
+                    fef2575: -7.85519, fef2575cvf: 3.919387
+                },
+                lnAltura: {
+                    cvf: 2.098703, vef1: 1.768038, vef1cvf: -0.100805,
+                    fef2575: 1.673427, fef2575cvf: -0.642607
+                },
+                lnIdade: {
+                    cvf: 0.23022, vef1: 0.290733, vef1cvf: 0,
+                    fef2575: 0.056126, fef2575cvf: 0
+                },
+                cor: {
+                    cvf: -0.073692, vef1: -0.054695, vef1cvf: 0,
+                    fef2575: 0, fef2575cvf: 0.027623
+                }
+            };
+
+            // Coeficientes SEE (Standard Error of the Estimate) - Masculino
+            const seeMale = {
+                cvf: 0.1362,
+                vef1: 0.1284,
+                vef1cvf: 0.04988,
+                fef2575: 0.224,
+                fef2575cvf: 0.2694
+            };
+
+            // Coeficientes SEE (Standard Error of the Estimate) - Feminino
+            const seeFemale = {
+                cvf: 0.1443,
+                vef1: 0.1369,
+                vef1cvf: 0.05075,
+                fef2575: 0.2297,
+                fef2575cvf: 0.2929
+            };
+
+            let currentCoefsPrev, currentCoefsLIN, currentSEE;
+
+            if (gender === 'male') {
+                currentCoefsPrev = coefMalePrev;
+                currentCoefsLIN = coefMaleLIN;
+                currentSEE = seeMale;
+            } else {
+                currentCoefsPrev = coefFemalePrev;
+                currentCoefsLIN = coefFemaleLIN;
+                currentSEE = seeFemale;
+            }
+
+            // Calcula valores previstos
+            const calculatePredictedValues = (coefsPrev, lnHeight, lnAge, colorCode) => {
+                const lnPrevCVF = coefsPrev.intercept.cvf + (lnHeight * coefsPrev.lnAltura.cvf) + (lnAge * coefsPrev.lnIdade.cvf) + (colorCode * coefsPrev.cor.cvf);
+                const prevCVF = Math.exp(lnPrevCVF);
+
+                const lnPrevVEF1 = coefsPrev.intercept.vef1 + (lnHeight * coefsPrev.lnAltura.vef1) + (lnAge * coefsPrev.lnIdade.vef1) + (colorCode * coefsPrev.cor.vef1);
+                const prevVEF1 = Math.exp(lnPrevVEF1);
+
+                const prevVEF1CVF = coefsPrev.intercept.vef1cvf + (lnHeight * coefsPrev.lnAltura.vef1cvf) + (lnAge * coefsPrev.lnIdade.vef1cvf) + (colorCode * coefsPrev.cor.vef1cvf);
+
+                const lnPrevFEF2575 = coefsPrev.intercept.fef2575 + (lnHeight * coefsPrev.lnAltura.fef2575) + (lnAge * coefsPrev.lnIdade.fef2575) + (colorCode * coefsPrev.cor.fef2575);
+                const prevFEF2575 = Math.exp(lnPrevFEF2575);
+
+                const prevFEF2575CVF = coefsPrev.intercept.fef2575cvf + (lnHeight * coefsPrev.lnAltura.fef2575cvf) + (lnAge * coefsPrev.lnIdade.fef2575cvf) + (colorCode * coefsPrev.cor.fef2575cvf);
+
+                return { prevCVF, prevVEF1, prevVEF1CVF, prevFEF2575, prevFEF2575CVF, lnPrevCVF, lnPrevVEF1, lnPrevFEF2575 };
+            };
+
+            const predictedValues = calculatePredictedValues(currentCoefsPrev, lnHeight, lnAge, colorCode);
+            const prevCVF = predictedValues.prevCVF;
+            const prevVEF1 = predictedValues.prevVEF1;
+            const prevVEF1CVF = predictedValues.prevVEF1CVF;
+            const prevFEF2575 = predictedValues.prevFEF2575;
+            const prevFEF2575CVF = predictedValues.prevFEF2575CVF;
+
+            // Calcula limites inferiores da normalidade (LIN)
+            const calculateLINValues = (coefsLIN, lnHeight, lnAge, colorCode) => {
+                const lnLINCVF = coefsLIN.intercept.cvf + (lnHeight * coefsLIN.lnAltura.cvf) + (lnAge * coefsLIN.lnIdade.cvf) + (colorCode * coefsLIN.cor.cvf);
+                const linCVF = Math.exp(lnLINCVF);
+
+                const lnLINVEF1 = coefsLIN.intercept.vef1 + (lnHeight * coefsLIN.lnAltura.vef1) + (lnAge * coefsLIN.lnIdade.vef1) + (colorCode * coefsLIN.cor.vef1);
+                const linVEF1 = Math.exp(lnLINVEF1);
+
+                const linVEF1CVF = coefsLIN.intercept.vef1cvf + (lnHeight * coefsLIN.lnAltura.vef1cvf) + (lnAge * coefsLIN.lnIdade.vef1cvf) + (colorCode * coefsLIN.cor.vef1cvf);
+
+                const lnLINFEF2575 = coefsLIN.intercept.fef2575 + (lnHeight * coefsLIN.lnAltura.fef2575) + (lnAge * coefsLIN.lnIdade.fef2575) + (colorCode * coefsLIN.cor.fef2575);
+                const linFEF2575 = Math.exp(lnLINFEF2575);
+
+                const linFEF2575CVF = coefsLIN.intercept.fef2575cvf + (lnHeight * coefsLIN.lnAltura.fef2575cvf) + (lnAge * coefsLIN.lnIdade.fef2575cvf) + (colorCode * coefsLIN.cor.fef2575cvf);
+
+                return { linCVF, linVEF1, linVEF1CVF, linFEF2575, linFEF2575CVF };
+            };
+
+            const linValues = calculateLINValues(currentCoefsLIN, lnHeight, lnAge, colorCode);
+            const linCVF = linValues.linCVF;
+            const linVEF1 = linValues.linVEF1;
+            const linVEF1CVF = linValues.linVEF1CVF;
+            const linFEF2575 = linValues.linFEF2575;
+            const linFEF2575CVF = linValues.linFEF2575CVF;
+
+            // Calcula valores observados derivados (VEF1/CVF e FEF25-75%/CVF)
+            const computeDerivedObserved = (obsVEF1, obsCVF, obsFEF2575) => {
+                const computedObsVEF1CVF = (obsVEF1 !== null && obsCVF !== null && obsCVF !== 0) ? (obsVEF1 / obsCVF) : null;
+                const computedObsFEF2575CVF = (obsFEF2575 !== null && obsCVF !== null && obsCVF !== 0) ? (obsFEF2575 / obsCVF) : null;
+                return { computedObsVEF1CVF, computedObsFEF2575CVF };
+            };
+
+            const derivedObsPre = computeDerivedObserved(obsVEF1_pre, obsCVF_pre, obsFEF2575_pre);
+            const computedObsVEF1CVF_pre = derivedObsPre.computedObsVEF1CVF;
+            const computedObsFEF2575CVF_pre = derivedObsPre.computedObsFEF2575CVF;
+
+            const derivedObsPost = computeDerivedObserved(obsVEF1_post, obsCVF_post, obsFEF2575_post);
+            const computedObsVEF1CVF_post = derivedObsPost.computedObsVEF1CVF;
+            const computedObsFEF2575CVF_post = derivedObsPost.computedObsFEF2575CVF;
+
+            // Calcula Z-scores
+            const calculateZScore = (obsVal, prevValRaw, seeVal, isLogTransformed) => {
+                if (obsVal === null || isNaN(obsVal) || prevValRaw === null || isNaN(prevValRaw) || seeVal === 0 || isNaN(seeVal)) {
+                    return null;
+                }
+                let numerator;
+                if (isLogTransformed) {
+                    if (obsVal <= 0) return null;
+                    numerator = Math.log(obsVal) - Math.log(prevValRaw);
+                } else {
+                    numerator = obsVal - prevValRaw;
+                }
+                return numerator / seeVal;
+            };
+
+            // Z-scores PRÉ-BD
+            const zScoreCVF_pre = calculateZScore(obsCVF_pre, prevCVF, currentSEE.cvf, true);
+            const zScoreVEF1_pre = calculateZScore(obsVEF1_pre, prevVEF1, currentSEE.vef1, true);
+            const zScoreVEF1CVF_pre = calculateZScore(computedObsVEF1CVF_pre, prevVEF1CVF, currentSEE.vef1cvf, false);
+            const zScoreFEF2575_pre = calculateZScore(obsFEF2575_pre, prevFEF2575, currentSEE.fef2575, true);
+            const zScoreFEF2575CVF_pre = calculateZScore(computedObsFEF2575CVF_pre, prevFEF2575CVF, currentSEE.fef2575cvf, false);
+        // Z-scores PÓS-BD
+        const zScoreCVF_post = calculateZScore(obsCVF_post, prevCVF, currentSEE.cvf, true);
+        const zScoreVEF1_post = calculateZScore(obsVEF1_post, prevVEF1, currentSEE.vef1, true);
+        const zScoreVEF1CVF_post = calculateZScore(computedObsVEF1CVF_post, prevVEF1CVF, currentSEE.vef1cvf, false);
+        const zScoreFEF2575_post = calculateZScore(obsFEF2575_post, prevFEF2575, currentSEE.fef2575, true);
+        const zScoreFEF2575CVF_post = calculateZScore(computedObsFEF2575CVF_post, prevFEF2575CVF, currentSEE.fef2575cvf, false);
+
+        // Funções auxiliares para formatação e cálculo
+        const formatValue = (value, decimals = 2) => value === null || isNaN(value) ? 'N/A' : value.toFixed(decimals);
+        const calculatePercentage = (observed, predicted) => {
+            if (observed === null || isNaN(observed) || predicted === null || isNaN(predicted) || predicted === 0) return 'N/A';
+            return ((observed / predicted) * 100).toFixed(2);
+        };
+
+        // Função para calcular diferença percentual do previsto
+        const calculateDiffPercentOfPredicted = (obsPre, obsPost, predicted) => {
+            if (obsPre === null || obsPost === null || isNaN(obsPre) || isNaN(obsPost) || predicted === null || isNaN(predicted) || predicted === 0) {
+                return null;
+            }
+            const absDiff = obsPost - obsPre;
+            return (absDiff / predicted) * 100;
+        };
+
+        // Função para criar linha da tabela e aplicar cor para Pré-BD
+        const addPreResultRow = (item, observedVal, predictedVal, linVal, zScoreVal) => {
+            const tbody = document.getElementById('resultsTableBodyPre');
+            const row = tbody.insertRow();
+
+            row.insertCell().textContent = item.name; // Variável
+
+            const cellObs = row.insertCell();
+            cellObs.textContent = formatValue(observedVal); // Observado
+
+            row.insertCell().textContent = formatValue(predictedVal); // Previsto
+
+            row.insertCell().textContent = formatValue(linVal); // LIN
+
+            const percentPrev = calculatePercentage(observedVal, predictedVal);
+            const cellPercent = row.insertCell();
+            cellPercent.textContent = percentPrev + '%'; // % do Previsto
+
+            const cellZscore = row.insertCell();
+            cellZscore.textContent = formatValue(zScoreVal, 3); // Z-score
+
+            // Aplica cor vermelha se observado < LIN
+            if (observedVal !== null && linVal !== null && observedVal < linVal) {
+                cellObs.classList.add('value-below-lin');
+                cellPercent.classList.add('value-below-lin');
+                cellZscore.classList.add('value-below-lin');
+            }
+        };
+
+        // Função para criar linha da tabela Pós-BD e Reversibilidade
+        const addPostReversibilityResultRow = (item, observedPostVal, predictedVal, linVal, zScorePostVal, obsPreVal, reversibilityOpts = { unit: '', colorable: false }) => {
+            const tbody = document.getElementById('resultsTableBodyPostAndReversibility');
+            const row = tbody.insertRow();
+
+            row.insertCell().textContent = item.name;
+
+            const cellObsPost = row.insertCell();
+            cellObsPost.textContent = formatValue(observedPostVal);
+
+            const percentPrevPost = calculatePercentage(observedPostVal, predictedVal);
+            const cellPercentPost = row.insertCell();
+            cellPercentPost.textContent = percentPrevPost + '%';
+
+            const cellZscorePost = row.insertCell();
+            cellZscorePost.textContent = formatValue(zScorePostVal, 3);
+
+            // Aplica cor vermelha se observado < LIN (para Pós-BD)
+            if (observedPostVal !== null && linVal !== null && observedPostVal < linVal) {
+                cellObsPost.classList.add('value-below-lin');
+                cellPercentPost.classList.add('value-below-lin');
+                cellZscorePost.classList.add('value-below-lin');
+            }
+
+            // Colunas de Reversibilidade
+            const cellAbsDiff = row.insertCell();
+            const cellDiffPercentOfPredicted = row.insertCell();
+
+            const absDiff = (observedPostVal !== null && obsPreVal !== null) ? (observedPostVal - obsPreVal) : null;
+            const diffPercentOfPredictedValue = calculateDiffPercentOfPredicted(obsPreVal, observedPostVal, predictedVal);
+
+            let formattedAbsDiff = 'N/A';
+            if (absDiff !== null) {
+                if (reversibilityOpts.unit === 'L') {
+                    formattedAbsDiff = formatValue(absDiff * 1000) + ' mL'; // L para mL
+                } else if (reversibilityOpts.unit === 'L/s') {
+                    formattedAbsDiff = formatValue(absDiff) + ' L/s'; // Já em L/s
+                } else if (reversibilityOpts.unit === 'ratio') {
+                    formattedAbsDiff = formatValue(absDiff, 3); // Para razões (VEF1/CVF, FEF25-75%/CVF)
+                } else { // Fallback
+                    formattedAbsDiff = formatValue(absDiff);
+                }
+            }
+            cellAbsDiff.textContent = formattedAbsDiff;
+            cellDiffPercentOfPredicted.textContent = formatValue(diffPercentOfPredictedValue) + '%';
+
+            // Criterio de reversibilidade: >= 10% do valor previsto, apenas para variáveis colorables
+            if (reversibilityOpts.colorable && diffPercentOfPredictedValue !== null && diffPercentOfPredictedValue >= 10) {
+                cellDiffPercentOfPredicted.classList.add('change-significant-green');
+            }
+        };
+
+        // Popula tabela PRÉ-BRONCODILATADOR
+        document.getElementById('resultsTableBodyPre').innerHTML = '';
+        addPreResultRow({ name: 'CVF (L)' }, obsCVF_pre, prevCVF, linCVF, zScoreCVF_pre);
+        addPreResultRow({ name: 'VEF1 (L)' }, obsVEF1_pre, prevVEF1, linVEF1, zScoreVEF1_pre);
+        addPreResultRow({ name: 'VEF1/CVF' }, computedObsVEF1CVF_pre, prevVEF1CVF, linVEF1CVF, zScoreVEF1CVF_pre);
+        addPreResultRow({ name: 'FEF25-75% (L/s)' }, obsFEF2575_pre, prevFEF2575, linFEF2575, zScoreFEF2575_pre);
+        addPreResultRow({ name: 'FEF25-75%/CVF' }, computedObsFEF2575CVF_pre, prevFEF2575CVF, linFEF2575CVF, zScoreFEF2575CVF_pre);
+
+        // Popula tabela PÓS-BRONCODILATADOR e REVERSIBILIDADE
+        document.getElementById('resultsTableBodyPostAndReversibility').innerHTML = '';
+        addPostReversibilityResultRow({ name: 'CVF (L)' }, obsCVF_post, prevCVF, linCVF, zScoreCVF_post, obsCVF_pre, { unit: 'L', colorable: true });
+        addPostReversibilityResultRow({ name: 'VEF1 (L)' }, obsVEF1_post, prevVEF1, linVEF1, zScoreVEF1_post, obsVEF1_pre, { unit: 'L', colorable: true });
+        addPostReversibilityResultRow({ name: 'VEF1/CVF' }, computedObsVEF1CVF_post, prevVEF1CVF, linVEF1CVF, zScoreVEF1CVF_post, computedObsVEF1CVF_pre, { unit: 'ratio', colorable: false });
+        addPostReversibilityResultRow({ name: 'FEF25-75% (L/s)' }, obsFEF2575_post, prevFEF2575, linFEF2575, zScoreFEF2575_post, obsFEF2575_pre, { unit: 'L/s', colorable: false });
+        addPostReversibilityResultRow({ name: 'FEF25-75%/CVF' }, computedObsFEF2575CVF_post, prevFEF2575CVF, linFEF2575CVF, zScoreFEF2575CVF_post, computedObsFEF2575CVF_pre, { unit: 'ratio', colorable: false });
+
+        // Função de interpretação conforme especificado
+        const generateInterpretation = (
+            obsCVF_pre, linCVF, obsVEF1_pre, linVEF1, computedObsVEF1CVF_pre, linVEF1CVF, zScoreVEF1CVF_pre,
+            obsCVF_post, linCVF_post, obsVEF1_post, linVEF1_post, computedObsVEF1CVF_post, linVEF1CVF_post, zScoreVEF1CVF_post,
+            prevCVF, prevVEF1
+        ) => {
+            // Função para classificar conforme os critérios especificados
+            const classifySpirometry = (cvf, linCVF, vef1, linVEF1, vef1cvf, linVEF1CVF, zScoreVEF1CVF) => {
+                // Verifica se todos os valores necessários estão disponíveis
+                if (cvf === null || vef1 === null || vef1cvf === null) {
+                    return "Sem Classificação (dados incompletos)";
+                }
+
+                // 1. Normal
+                if (cvf >= linCVF && vef1 >= linVEF1 && zScoreVEF1CVF >= -1.645) { // LIN para z-score é ~-1.645
+                    return "Normal";
+                }
+                // 2. Obstrutivo
+                else if (cvf >= linCVF && vef1 >= linVEF1 && zScoreVEF1CVF < -1.645) {
+                    return "Obstrutivo";
+                }
+                // 3. Restritivo
+                else if (cvf < linCVF && vef1 < linVEF1 && zScoreVEF1CVF >= -1.645) {
+                    return "Restritivo";
+                }
+                // 4. Misto
+                else if (cvf < linCVF && zScoreVEF1CVF < -1.645) {
+                    return "Misto";
+                }
+                // 5. Dysanapsis
+                else if (cvf >= linCVF * 0.8 && vef1 >= linVEF1 * 0.8 && zScoreVEF1CVF < -1.645) {
+                    return "Considerar Dysanapsis";
+                }
+                // Caso não se enquadre em nenhum dos padrões acima
+                else {
+                    return "Sem Classificação (padrão não identificado)";
+                }
+            };
+
+            // Classificação Pré-BD
+            const classification_pre = classifySpirometry(
+                obsCVF_pre, linCVF, 
+                obsVEF1_pre, linVEF1, 
+                computedObsVEF1CVF_pre, linVEF1CVF, zScoreVEF1CVF_pre
+            );
+
+            // Classificação Pós-BD (se houver dados)
+            let classification_post = "Não realizado";
+            if (obsCVF_post !== null || obsVEF1_post !== null) {
+                classification_post = classifySpirometry(
+                    obsCVF_post, linCVF_post || linCVF, 
+                    obsVEF1_post, linVEF1_post || linVEF1, 
+                    computedObsVEF1CVF_post, linVEF1CVF_post || linVEF1CVF, zScoreVEF1CVF_post
+                );
+            }
+
+            // Calcula a resposta ao broncodilatador
+            const calculateResponse = (obsPre, obsPost, predicted) => {
+                if (obsPre === null || obsPost === null || predicted === null || predicted === 0) return null;
+                return ((obsPost - obsPre) / predicted) * 100;
+            };
+
+            const responseCVF = calculateResponse(obsCVF_pre, obsCVF_post, prevCVF);
+            const responseVEF1 = calculateResponse(obsVEF1_pre, obsVEF1_post, prevVEF1);
+
+            // Verifica resposta significativa (>10% do previsto)
+            const significantResponseCVF = responseCVF !== null && responseCVF > 10;
+            const significantResponseVEF1 = responseVEF1 !== null && responseVEF1 > 10;
+            const anySignificantResponse = significantResponseCVF || significantResponseVEF1;
+
+            // Gera o texto de interpretação
+            let interpretationText = `<strong>Interpretação do Exame de Espirometria:</strong><br><br>`;
+
+            // 1. Classificação Pré-BD
+            interpretationText += `<strong>1. Pré-Broncodilatador:</strong><br>`;
+            interpretationText += `- Classificação: <strong>${classification_pre}</strong><br>`;
+            
+            // Detalhes adicionais pré-BD
+            if (classification_pre.includes("Obstrutivo")) {
+                interpretationText += `- Padrão obstrutivo: VEF1/CVF reduzido com CVF e VEF1 normais.<br>`;
+            } else if (classification_pre.includes("Restritivo")) {
+                interpretationText += `- Padrão restritivo: CVF e VEF1 reduzidos com relação VEF1/CVF preservada.<br>`;
+            } else if (classification_pre.includes("Misto")) {
+                interpretationText += `- Padrão misto: CVF e VEF1/CVF reduzidos.<br>`;
+            } else if (classification_pre.includes("Dysanapsis")) {
+                interpretationText += `- Possível dysanapsis: discrepância entre fluxo e volumes.<br>`;
+            }
+
+            // 2. Classificação Pós-BD e resposta ao BD
+            interpretationText += `<br><strong>2. Pós-Broncodilatador:</strong><br>`;
+            interpretationText += `- Classificação: <strong>${classification_post}</strong><br>`;
+            
+            if (classification_post !== "Não realizado") {
+                // Mudança na classificação
+                if (classification_pre !== classification_post) {
+                    interpretationText += `- Mudança no padrão: de ${classification_pre} para ${classification_post}<br>`;
+                } else {
+                    interpretationText += `- Persistência do padrão ${classification_pre}<br>`;
+                }
+
+                // Resposta ao broncodilatador
+                if (anySignificantResponse) {
+                    interpretationText += `- Resposta significativa ao broncodilatador (>10% do previsto) em:<br>`;
+                    if (significantResponseCVF) {
+                        interpretationText += `  • CVF: +${responseCVF.toFixed(1)}% do previsto<br>`;
+                    }
+                    if (significantResponseVEF1) {
+                        interpretationText += `  • VEF1: +${responseVEF1.toFixed(1)}% do previsto<br>`;
+                    }
+                } else if (responseCVF !== null || responseVEF1 !== null) {
+                    interpretationText += `- Resposta insuficiente ao broncodilatador (≤10% do valor previsto)<br>`;
+                }
+            }
+
+            // 3. Conclusão
+            interpretationText += `<br><strong>3. Conclusão:</strong><br>`;
+            interpretationText += `- Padrão espirométrico inicial: ${classification_pre}<br>`;
+            
+            if (classification_post !== "Não realizado") {
+                interpretationText += `- Padrão após broncodilatador: ${classification_post}<br>`;
+                if (anySignificantResponse) {
+                    interpretationText += `- Resposta positiva ao broncodilatador observada.<br>`;
+                }
+            }
+            
+            interpretationText += `<br><em>Observação: Esta interpretação deve ser correlacionada com a clínica do paciente e outros exames complementares quando necessário.</em>`;
+
+            document.getElementById('interpretation-text').innerHTML = interpretationText;
+        };
+
+        // Chama a função de interpretação com todos os parâmetros necessários
+        generateInterpretation(
+            obsCVF_pre, linCVF, obsVEF1_pre, linVEF1, computedObsVEF1CVF_pre, linVEF1CVF, zScoreVEF1CVF_pre,
+            obsCVF_post, linCVF, obsVEF1_post, linVEF1, computedObsVEF1CVF_post, linVEF1CVF, zScoreVEF1CVF_post,
+            prevCVF, prevVEF1
+        );
+
+        // Mostra os resultados
+        document.getElementById('results').style.display = 'block';
+    });
+
+    // Event Listeners para os botões de ação
+    document.getElementById('resetButton').addEventListener('click', function() {
+        // Limpa campos do paciente e dados do exame, mantém médico e clínica
+        document.getElementById('patientName').value = '';
+        
+        // Preenche a data do exame com a data atual
+        const today = new Date();
+        const yyyy = today.getFullYear();
+        const mm = String(today.getMonth() + 1).padStart(2, '0');
+        const dd = String(today.getDate()).padStart(2, '0');
+        document.getElementById('examDate').value = `${yyyy}-${mm}-${dd}`;
+
+        document.getElementById('ageYears').value = '';
+        document.getElementById('ageMonths').value = '0';
+        document.getElementById('heightCm').value = '';
+        document.getElementById('gender').value = '';
+        document.getElementById('colorCode').value = '';
+        document.getElementById('obsCVF_pre').value = '';
+        document.getElementById('obsVEF1_pre').value = '';
+        document.getElementById('obsFEF2575_pre').value = '';
+        document.getElementById('obsCVF_post').value = '';
+        document.getElementById('obsVEF1_post').value = '';
+        document.getElementById('obsFEF2575_post').value = '';
+
+        document.getElementById('results').style.display = 'none';
+        document.getElementById('ageRangeWarning').style.display = 'none';
+        document.querySelectorAll('.error-message').forEach(el => el.style.display = 'none');
+    });
+
+    document.getElementById('printButton').addEventListener('click', function() {
+        window.print();
+    });
+
+    document.getElementById('shareButton').addEventListener('click', function() {
+        const resultsDiv = document.getElementById('results');
+        if (resultsDiv.style.display === 'none') {
+            alert('Calcule um exame primeiro para poder compartilhar os resultados.');
+            return;
+        }
+
+        // Oculta temporariamente o formulário e botões de ação
+        const formElement = document.getElementById('spirometryForm');
+        const actionButtons = document.querySelector('.action-buttons-group');
+        if (formElement) formElement.style.display = 'none';
+        if (actionButtons) actionButtons.style.display = 'none';
+
+        // Usa html2canvas para renderizar a div de resultados
+        html2canvas(resultsDiv, {
+            scale: 2,
+            useCORS: true
+        }).then(function(canvas) {
+            // Restaura a exibição do formulário e botões
+            if (formElement) formElement.style.display = 'block';
+            if (actionButtons) actionButtons.style.display = 'flex';
+
+            // Tenta converter o canvas para um Blob
+            canvas.toBlob(function(blob) {
+                if (!blob) {
+                    alert('Erro ao gerar imagem para compartilhamento.');
+                    return;
+                }
+
+                // Tenta usar a Web Share API (principalmente mobile)
+                if (navigator.share) {
+                    const file = new File([blob], 'espirometria_resultado.png', { type: 'image/png' });
+                    navigator.share({
+                        files: [file],
+                        title: 'Resultado de Espirometria Pediátrica',
+                        text: 'Confira os resultados do exame de espirometria pediátrica:'
+                    }).catch((error) => {
+                        console.error('Erro ao compartilhar:', error);
+                        downloadImage(blob, 'espirometria_resultado.png');
+                    });
+                } else {
+                    // Fallback para navegadores sem suporte a Web Share API
+                    downloadImage(blob, 'espirometria_resultado.png');
+                }
+            }, 'image/png');
+        }).catch(function(error) {
+            // Em caso de erro, restaura os elementos e informa o usuário
+            if (formElement) formElement.style.display = 'block';
+            if (actionButtons) actionButtons.style.display = 'flex';
+            console.error('Erro ao gerar imagem:', error);
+            alert('Não foi possível gerar a imagem dos resultados. Tente novamente ou use a função de impressão.');
+        });
+    });
+
+    // Função auxiliar para baixar a imagem
+    function downloadImage(blob, filename) {
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(a.href);
+    }
+</script>
